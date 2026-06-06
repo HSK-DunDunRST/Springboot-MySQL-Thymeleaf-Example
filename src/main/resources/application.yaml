@@ -1,9 +1,6 @@
 spring:
   application:
     name: example
-  web:
-    resources:
-      add-mappings: false
 
   datasource:
     url: ${DB_URL}
@@ -30,7 +27,7 @@ spring:
 
 server:
   servlet:
-    context-path: /api/v1
+#    context-path: /api/v1
   port: 8080
 
 logging:

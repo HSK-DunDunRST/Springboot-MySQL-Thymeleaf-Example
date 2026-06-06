@@ -28,7 +28,7 @@ public class QuestionService {
     /* 질문 리스트 불러오기 */
     public Page<Question> getList(int page, String kw) {
         List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("createDate"));
+        sorts.add(Sort.Order.desc("createdAt"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
         
         if (kw == null || kw.trim().isEmpty()) {
