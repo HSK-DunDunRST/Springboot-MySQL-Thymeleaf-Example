@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${question.subject} + ' - Q&A 시스템'">질문 상세 - Q&A 시스템</title>
+</head>
+<body>
+<div layout:fragment="content" class="fade-in">
+    <!-- 뒤로가기 버튼 -->
+    <div class="mb-3">
+        <a th:href="@{/question/list}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>목록으로
+        </a>
+    </div>
+
+    <!-- 질문 상세 내용 -->
+    <div class="question-detail">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <h1 class="h2 text-primary" th:text="${question.subject}">질문 제목</h1>
+            <div class="d-flex gap-2">
+                <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-warning btn-sm">
+                    <i class="fas fa-edit me-1"></i>수정
+                </a>
+                <a th:href="@{|/question/delete/${question.id}|}" 
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('정말로 이 질문을 삭제하시겠습니까?')">
+                    <i class="fas fa-trash me-1"></i>삭제
+                </a>
+            </div>
+        </div>
+
+        <div class="question-meta mb-4">
+            <span class="badge bg-primary me-2">
+                <i class="fas fa-calendar-alt me-1"></i>
+                작성일: <span th:text="${#temporals.format(question.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+            </span>
+            <span th:if="${question.updatedAt != null}" class="badge bg-secondary">
+                <i class="fas fa-edit me-1"></i>
+                수정일: <span th:text="${#temporals.format(question.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>
+            </span>
+        </div>
+
+        <div class="question-content" th:text="${question.content}">질문 내용</div>
+    </div>
+
+    <!-- 답변 목록 -->
+    <div class="answer-section" id="answer">
+        <h3 class="h4 text-success mb-4">
+            <i class="fas fa-comments me-2"></i>
+            답변 <span class="badge bg-success" th:text="${question.answerList.size()}">0</span>개
+        </h3>
+
+        <!-- 답변이 없을 때 -->
+        <div th:if="${question.answerList.isEmpty()}" class="text-center py-4">
+            <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">아직 답변이 없습니다.</h5>
+            <p class="text-muted">첫 번째 답변을 작성해보세요!</p>
+        </div>
+
+        <!-- 답변 리스트 -->
+        <div th:unless="${question.answerList.isEmpty()}">
+            <div th:each="answer : ${question.answerList}" class="answer-item">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="answer-meta">
+                        <span class="badge bg-success me-2">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            <span th:text="${#temporals.format(answer.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                        </span>
+                        <span th:if="${answer.updatedAt != null}" class="badge bg-secondary">
+                            <i class="fas fa-edit me-1"></i>
+                            수정: <span th:text="${#temporals.format(answer.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>
+                        </span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit me-1"></i>수정
+                        </a>
+                        <a th:href="@{|/answer/delete/${answer.id}|}" 
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('정말로 이 답변을 삭제하시겠습니까?')">
+                            <i class="fas fa-trash me-1"></i>삭제
+                        </a>
+                    </div>
+                </div>
+                <div class="answer-content" th:text="${answer.content}">답변 내용</div>
+            </div>
+        </div>
+
+        <!-- 답변 작성 폼 -->
+        <div class="mt-4 pt-4 border-top">
+            <h5 class="text-primary mb-3">
+                <i class="fas fa-pen me-2"></i>답변 작성
+            </h5>
+            <form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post">
+                <div class="alert alert-danger" th:if="${#fields.hasAnyErrors()}" role="alert">
+                    <strong>오류가 발생했습니다!</strong>
+                    <ul class="mb-0">
+                        <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+                    </ul>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="content" class="form-label">답변 내용</label>
+                    <textarea class="form-control" 
+                              th:field="*{content}" 
+                              id="content" 
+                              rows="5" 
+                              placeholder="답변을 입력해주세요..."
+                              th:classappend="${#fields.hasErrors('content')} ? 'is-invalid'"></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
+                </div>
+                
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-paper-plane me-2"></i>답변 등록
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 관련 질문 추천 (선택사항) -->
+    <div class="mt-4">
+        <div class="card bg-light">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>다른 질문도 확인해보세요
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex gap-2 flex-wrap">
+                    <a th:href="@{/question/list}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-list me-1"></i>전체 질문 보기
+                    </a>
+                    <a th:href="@{/question/create}" class="btn btn-outline-success btn-sm">
+                        <i class="fas fa-plus me-1"></i>새 질문 등록
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="script">
+// 답변 등록 후 답변 영역으로 스크롤
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.hash === '#answer') {
+        document.getElementById('answer').scrollIntoView();
+    }
+});
+</script>
+</body>
+</html>

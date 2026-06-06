@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>답변 수정 - Q&A 시스템</title>
+</head>
+<body>
+<div layout:fragment="content" class="fade-in">
+    <!-- 뒤로가기 버튼 -->
+    <div class="mb-3">
+        <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
+            <i class="fas fa-arrow-left me-2"></i>뒤로가기
+        </button>
+    </div>
+
+    <!-- 페이지 헤더 -->
+    <div class="mb-4">
+        <h1 class="h2 text-primary">
+            <i class="fas fa-edit me-2"></i>답변 수정
+        </h1>
+        <p class="text-muted">답변 내용을 수정해주세요.</p>
+    </div>
+
+    <!-- 답변 수정 폼 -->
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{/answer/modify/{id}(id=${param.id})}" th:object="${answerForm}" method="post">
+                <!-- 전체 오류 메시지 -->
+                <div class="alert alert-danger" th:if="${#fields.hasAnyErrors()}" role="alert">
+                    <strong>오류가 발생했습니다!</strong>
+                    <ul class="mb-0">
+                        <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+                    </ul>
+                </div>
+
+                <!-- 답변 내용 -->
+                <div class="mb-4">
+                    <label for="content" class="form-label">
+                        <i class="fas fa-comment me-1"></i>답변 내용 <span class="text-danger">*</span>
+                    </label>
+                    <textarea class="form-control" 
+                              th:field="*{content}" 
+                              id="content" 
+                              rows="8" 
+                              placeholder="답변 내용을 입력해주세요..."
+                              th:classappend="${#fields.hasErrors('content')} ? 'is-invalid'"></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        구체적이고 도움이 되는 답변을 작성해주세요.
+                    </div>
+                </div>
+
+                <!-- 수정 가이드 -->
+                <div class="alert alert-info" role="alert">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-lightbulb me-2"></i>좋은 답변 작성 팁
+                    </h6>
+                    <ul class="mb-0">
+                        <li>질문자가 이해하기 쉽게 단계별로 설명하세요</li>
+                        <li>예시 코드나 구체적인 방법을 제시하세요</li>
+                        <li>추가 참고 자료나 링크를 포함하세요</li>
+                        <li>정확하고 검증된 정보를 제공하세요</li>
+                    </ul>
+                </div>
+
+                <!-- 버튼 영역 -->
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
+                        <i class="fas fa-times me-2"></i>취소
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-2"></i>답변 수정
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 미리보기 영역 (선택사항) -->
+    <div class="mt-4">
+        <div class="card bg-light">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
+                    <i class="fas fa-eye me-2"></i>미리보기
+                </h6>
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="togglePreview()">
+                    <i class="fas fa-refresh me-1"></i>새로고침
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="preview-content" class="text-muted">
+                    내용을 입력하면 미리보기가 표시됩니다.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="script">
+// 폼 유효성 검사 및 미리보기
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const contentTextarea = document.getElementById('content');
+    const previewContent = document.getElementById('preview-content');
+
+    // 실시간 미리보기
+    contentTextarea.addEventListener('input', function() {
+        updatePreview();
+    });
+
+    function updatePreview() {
+        const content = contentTextarea.value.trim();
+        if (content) {
+            previewContent.innerHTML = content.replace(/\n/g, '<br>');
+            previewContent.classList.remove('text-muted');
+        } else {
+            previewContent.innerHTML = '내용을 입력하면 미리보기가 표시됩니다.';
+            previewContent.classList.add('text-muted');
+        }
+    }
+
+    // 미리보기 토글
+    window.togglePreview = function() {
+        updatePreview();
+    };
+
+    // 폼 제출 시 확인
+    form.addEventListener('submit', function(e) {
+        const content = contentTextarea.value.trim();
+
+        if (!content) {
+            e.preventDefault();
+            alert('답변 내용을 입력해주세요.');
+            contentTextarea.focus();
+            return false;
+        }
+
+        if (content.length < 5) {
+            e.preventDefault();
+            alert('답변은 5자 이상 입력해주세요.');
+            contentTextarea.focus();
+            return false;
+        }
+
+        return confirm('답변을 수정하시겠습니까?');
+    });
+
+    // 초기 미리보기 설정
+    updatePreview();
+});
+</script>
+</body>
+</html>
