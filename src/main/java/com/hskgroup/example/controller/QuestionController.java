@@ -55,11 +55,13 @@ public class QuestionController {
 
     /* 질문 수정 페이지 요청 처리 */
     @GetMapping("/modify/{id}")
-    public String questionModify(QuestionForm questionForm, @PathVariable("id") Integer id) {
-        Question question = this.questionService.getQuestion(id);  // 질문 정보 가져오기
-        questionForm.setSubject(question.getSubject());  // 기존 질문 제목 설정
-        questionForm.setContent(question.getContent());  // 기존 질문 내용 설정
-        return "question_form";  // 질문 수정 폼 페이지 반환
+
+    public String questionModify(QuestionForm questionForm, @PathVariable("id") Integer id, Model model) {
+        Question question = this.questionService.getQuestion(id);
+        questionForm.setSubject(question.getSubject());
+        questionForm.setContent(question.getContent());
+        model.addAttribute("question", question);
+        return "question_edit";
     }
 
     /* 질문 수정 요청 처리 */
