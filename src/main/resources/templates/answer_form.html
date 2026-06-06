@@ -23,7 +23,8 @@
     <!-- 답변 수정 폼 -->
     <div class="card">
         <div class="card-body">
-            <form th:action="@{/answer/modify/{id}(id=${param.id})}" th:object="${answerForm}" method="post">
+            <input type="hidden" name="id" th:value="${id}">
+            <form th:action="@{/answer/modify/{id}(id=${id})}" th:object="${answerForm}" method="post">
                 <!-- 전체 오류 메시지 -->
                 <div class="alert alert-danger" th:if="${#fields.hasAnyErrors()}" role="alert">
                     <strong>오류가 발생했습니다!</strong>
@@ -37,10 +38,10 @@
                     <label for="content" class="form-label">
                         <i class="fas fa-comment me-1"></i>답변 내용 <span class="text-danger">*</span>
                     </label>
-                    <textarea class="form-control" 
-                              th:field="*{content}" 
-                              id="content" 
-                              rows="8" 
+                    <textarea class="form-control"
+                              th:field="*{content}"
+                              id="content"
+                              rows="8"
                               placeholder="답변 내용을 입력해주세요..."
                               th:classappend="${#fields.hasErrors('content')} ? 'is-invalid'"></textarea>
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
