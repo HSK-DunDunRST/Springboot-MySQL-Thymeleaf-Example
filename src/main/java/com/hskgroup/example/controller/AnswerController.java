@@ -42,7 +42,7 @@ public class AnswerController {
     public String answerModify(AnswerForm answerForm, @PathVariable("id") Integer id) {
         Answer answer = this.answerService.getAnswer(id);
         answerForm.setContent(answer.getContent());
-        return "answer_form";
+        return "answer_edit";
     }
 
     /* POST 방식의 답변 수정 처리 */
@@ -50,7 +50,7 @@ public class AnswerController {
     public String answerModify(@Valid AnswerForm answerForm, BindingResult bindingResult,
                                 @PathVariable("id") Integer id){
         if (bindingResult.hasErrors()){
-            return "answer_form";
+            return "answer_edit";
         }
         /* 답변 객체 생성 */
         Answer answer = this.answerService.getAnswer(id);

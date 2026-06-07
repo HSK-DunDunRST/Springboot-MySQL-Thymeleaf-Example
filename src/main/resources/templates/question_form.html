@@ -7,16 +7,12 @@
 <div layout:fragment="content" class="fade-in">
     <!-- 뒤로가기 버튼 -->
     <div class="mb-3">
-        <a th:href="@{/question/list}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>목록으로
-        </a>
+        <a th:href="@{/question/list}" class="btn btn-outline-secondary">목록으로</a>
     </div>
 
     <!-- 페이지 헤더 -->
     <div class="mb-4">
-        <h1 class="h2 text-primary">
-            <i class="fas fa-edit me-2"></i>질문 등록
-        </h1>
+        <h1 class="h2 text-primary">질문 등록</h1>
         <p class="text-muted">궁금한 내용을 자세히 작성해주세요.</p>
     </div>
 
@@ -34,42 +30,23 @@
 
                 <!-- 질문 제목 -->
                 <div class="mb-4">
-                    <label for="subject" class="form-label">
-                        <i class="fas fa-heading me-1"></i>질문 제목 <span class="text-danger">*</span>
-                    </label>
-                    <input type="text" 
-                           class="form-control" 
-                           th:field="*{subject}" 
-                           id="subject" 
-                           placeholder="질문 제목을 입력해주세요..."
-                           th:classappend="${#fields.hasErrors('subject')} ? 'is-invalid'">
+                    <label for="subject" class="form-label">질문 제목 <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" th:field="*{subject}" id="subject" placeholder="질문 제목을 입력해주세요..." th:classappend="${#fields.hasErrors('subject')} ? 'is-invalid'">
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></div>
                     <div class="form-text">간결하고 명확한 제목을 작성해주세요.</div>
                 </div>
 
                 <!-- 질문 내용 -->
                 <div class="mb-4">
-                    <label for="content" class="form-label">
-                        <i class="fas fa-align-left me-1"></i>질문 내용 <span class="text-danger">*</span>
-                    </label>
-                    <textarea class="form-control" 
-                              th:field="*{content}" 
-                              id="content" 
-                              rows="10" 
-                              placeholder="질문 내용을 자세히 입력해주세요..."
-                              th:classappend="${#fields.hasErrors('content')} ? 'is-invalid'"></textarea>
+                    <label for="content" class="form-label">질문 내용 <span class="text-danger">*</span></label>
+                    <textarea class="form-control" th:field="*{content}" id="content" rows="10" placeholder="질문 내용을 자세히 입력해주세요..." th:classappend="${#fields.hasErrors('content')} ? 'is-invalid'"></textarea>
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
-                    <div class="form-text">
-                        <i class="fas fa-info-circle me-1"></i>
-                        문제 상황, 시도해본 방법, 원하는 결과 등을 구체적으로 작성하면 더 정확한 답변을 받을 수 있습니다.
-                    </div>
+                    <div class="form-text">문제 상황, 시도해본 방법, 원하는 결과 등을 구체적으로 작성하면 더 정확한 답변을 받을 수 있습니다.</div>
                 </div>
 
                 <!-- 작성 가이드 -->
                 <div class="alert alert-info" role="alert">
-                    <h6 class="alert-heading">
-                        <i class="fas fa-lightbulb me-2"></i>좋은 질문 작성 팁
-                    </h6>
+                    <h6 class="alert-heading">좋은 질문 작성 팁</h6>
                     <ul class="mb-0">
                         <li>구체적이고 명확한 제목을 작성하세요</li>
                         <li>문제 상황을 상세히 설명하세요</li>
@@ -80,12 +57,8 @@
 
                 <!-- 버튼 영역 -->
                 <div class="d-flex justify-content-between">
-                    <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
-                        <i class="fas fa-times me-2"></i>취소
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane me-2"></i>질문 등록
-                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="history.back()">취소</button>
+                    <button type="submit" class="btn btn-primary">질문 등록</button>
                 </div>
             </form>
         </div>
@@ -95,9 +68,7 @@
     <div class="mt-4">
         <div class="card bg-light">
             <div class="card-header">
-                <h6 class="mb-0">
-                    <i class="fas fa-question-circle me-2"></i>자주 묻는 질문
-                </h6>
+                <h6 class="mb-0">자주 묻는 질문</h6>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -154,9 +125,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
 
-        if (content.length < 10) {
+        if (content.length < 5) {
             e.preventDefault();
-            alert('내용은 10자 이상 입력해주세요.');
+            alert('내용은 5자 이상 입력해주세요.');
             contentTextarea.focus();
             return false;
         }

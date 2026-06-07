@@ -7,12 +7,8 @@
 <div layout:fragment="content" class="fade-in">
     <!-- 페이지 헤더 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2 text-primary">
-            <i class="fas fa-list me-2"></i>질문 목록
-        </h1>
-        <a th:href="@{/question/create}" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>질문 등록
-        </a>
+        <h1 class="h2 text-primary">질문 목록</h1>
+        <a th:href="@{/question/create}" class="btn btn-primary">질문 등록</a>
     </div>
 
     <!-- 검색 영역 -->
@@ -23,9 +19,7 @@
                     <input type="text" name="kw" th:value="${kw}" class="form-control" placeholder="검색어를 입력하세요...">
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-search me-2"></i>검색
-                    </button>
+                    <button type="submit" class="btn btn-primary w-100">검색</button>
                 </div>
             </div>
         </form>
@@ -35,33 +29,23 @@
     <div class="row">
         <div class="col-12">
             <div th:if="${questionPage.isEmpty()}" class="text-center py-5">
-                <i class="fas fa-question-circle fa-3x text-muted mb-3"></i>
                 <h4 class="text-muted">등록된 질문이 없습니다.</h4>
                 <p class="text-muted">첫 번째 질문을 등록해보세요!</p>
-                <a th:href="@{/question/create}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>질문 등록하기
-                </a>
+                <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
             </div>
-
             <div th:unless="${questionPage.isEmpty()}">
                 <!-- 질문 카드 리스트 -->
                 <div th:each="question : ${questionPage.content}" class="question-card card mb-3">
                     <div class="card-body">
-                        <div class="row align-items-center">
+                        <div class="row align-items-center p-2">
                             <div class="col-md-9">
-                                <h5 class="card-title mb-2">
-                                    <a th:href="@{|/question/detail/${question.id}|}" 
-                                       class="question-title" 
-                                       th:text="${question.subject}">질문 제목</a>
+                                <h5 class="card-title">
+                                    <a th:href="@{|/question/detail/${question.id}|}" class="question-title" th:text="${question.subject}">질문 제목</a>
                                 </h5>
-                                <p class="card-text text-muted" th:text="${#strings.abbreviate(question.content, 100)}">
-                                    질문 내용...
-                                </p>
+                                <p class="card-text text-muted" th:text="${#strings.abbreviate(question.content, 100)}">질문 내용...</p>
                                 <div class="question-meta">
-                                    <i class="fas fa-calendar-alt me-1"></i>
                                     <span th:text="${#temporals.format(question.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
                                     <span th:if="${question.updatedAt != null}" class="ms-3">
-                                        <i class="fas fa-edit me-1"></i>
                                         수정: <span th:text="${#temporals.format(question.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>
                                     </span>
                                 </div>
@@ -69,84 +53,50 @@
                             <div class="col-md-3 text-end">
                                 <div class="d-flex flex-column align-items-end">
                                     <span class="answer-count mb-2" th:if="${question.answerList.size() > 0}">
-                                        <i class="fas fa-comments me-1"></i>
                                         답변 <span th:text="${question.answerList.size()}">0</span>개
                                     </span>
-                                    <span class="badge bg-light text-dark" th:unless="${question.answerList.size() > 0}">
-                                        <i class="fas fa-clock me-1"></i>답변 대기중
-                                    </span>
+                                    <span class="badge bg-light text-dark" th:unless="${question.answerList.size() > 0}">답변 대기중</span>
                                     <div class="mt-2">
-                                        <a th:href="@{|/question/detail/${question.id}|}" class="btn btn-outline-primary btn-sm">
-                                            <i class="fas fa-eye me-1"></i>상세보기
-                                        </a>
+                                        <a th:href="@{|/question/detail/${question.id}|}" class="btn btn-outline-primary btn-sm">상세보기</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <!-- 페이지네이션 -->
                 <nav aria-label="질문 목록 페이지네이션" th:if="${questionPage.totalPages > 1}">
                     <ul class="pagination mt-4">
                         <!-- 이전 페이지 -->
                         <li class="page-item" th:classappend="${questionPage.first} ? 'disabled'">
-                            <a class="page-link" 
-                               th:href="@{/question/list(page=${questionPage.number-1}, kw=${kw})}"
-                               aria-label="이전 페이지">
-                                <i class="fas fa-chevron-left"></i>
-                            </a>
+                            <a class="page-link" th:href="@{/question/list(page=${questionPage.number-1}, kw=${kw})}" aria-label="이전 페이지"></a>
                         </li>
-
                         <!-- 페이지 번호 -->
-                        <li th:each="page : ${#numbers.sequence(0, questionPage.totalPages-1)}" 
-                            class="page-item" 
-                            th:classappend="${page == questionPage.number} ? 'active'">
-                            <a class="page-link" 
-                               th:href="@{/question/list(page=${page}, kw=${kw})}" 
-                               th:text="${page + 1}">1</a>
+                        <li th:each="page : ${#numbers.sequence(0, questionPage.totalPages-1)}" class="page-item" th:classappend="${page == questionPage.number} ? 'active'">
+                            <a class="page-link" th:href="@{/question/list(page=${page}, kw=${kw})}" th:text="${page + 1}">1</a>
                         </li>
-
                         <!-- 다음 페이지 -->
                         <li class="page-item" th:classappend="${questionPage.last} ? 'disabled'">
-                            <a class="page-link" 
-                               th:href="@{/question/list(page=${questionPage.number+1}, kw=${kw})}"
-                               aria-label="다음 페이지">
-                                <i class="fas fa-chevron-right"></i>
-                            </a>
+                            <a class="page-link" th:href="@{/question/list(page=${questionPage.number+1}, kw=${kw})}" aria-label="다음 페이지"></a>
                         </li>
                     </ul>
                 </nav>
             </div>
         </div>
     </div>
-
     <!-- 통계 정보 -->
     <div class="row mt-4">
         <div class="col-12">
             <div class="card bg-light">
                 <div class="card-body text-center">
-                    <div class="row">
+                    <div class="row justify-content-between">
                         <div class="col-md-4">
-                            <h5 class="text-primary">
-                                <i class="fas fa-question-circle me-2"></i>
-                                총 질문 수
-                            </h5>
+                            <h5 class="text-primary">총 질문 수</h5>
                             <h3 class="text-primary" th:text="${questionPage.totalElements}">0</h3>
                         </div>
                         <div class="col-md-4">
-                            <h5 class="text-success">
-                                <i class="fas fa-comments me-2"></i>
-                                총 답변 수
-                            </h5>
+                            <h5 class="text-success">총 답변 수</h5>
                             <h3 class="text-success" th:text="${#lists.size(questionPage.content) > 0 ? #aggregates.sum(questionPage.content.![answerList.size()]) : 0}">0</h3>
-                        </div>
-                        <div class="col-md-4">
-                            <h5 class="text-info">
-                                <i class="fas fa-file-alt me-2"></i>
-                                현재 페이지
-                            </h5>
-                            <h3 class="text-info" th:text="${questionPage.number + 1} + ' / ' + ${questionPage.totalPages}">1 / 1</h3>
                         </div>
                     </div>
                 </div>
